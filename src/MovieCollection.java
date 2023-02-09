@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -190,10 +191,64 @@ public class MovieCollection {
     for(int j = 1; j<results.size(); j++){
       System.out.println(j + ". " + results.get(j).getTitle());
     }
+    if (results.size() > 0) {
+      // sort the results by title
+      sortResults(results);
+
+      System.out.println("Which movie would you like to learn more about?");
+      System.out.print("Enter number: ");
+      int choice = scanner.nextInt();
+      scanner.nextLine();
+      Movie selectedMovie = results.get(choice - 1);
+      displayMovieInfo(selectedMovie);
+      System.out.println("\n ** Press Enter to Return to Main Menu **");
+      scanner.nextLine();
+    } else {
+      System.out.println("\nNo movie titles match that search term!");
+      System.out.println("** Press Enter to Return to Main Menu **");
+      scanner.nextLine();
+    }
+
   }
 
   private void searchCast() {
+    System.out.print("Enter a name");
+    String name = scanner.nextLine();
+    name = name.toLowerCase();
+    ArrayList<String> results = new ArrayList<String>();
+    int count = 0;
+    for(int i =0; i<movies.size(); i++){
+      String[] casts = movies.get(i).getCast().split("\\|");
+      for(int k = 0; k<casts.length; k++){
+        if(!results.contains(casts[k]) && casts[k].toLowerCase().contains(name)){
+          results.add(casts[k]);
+        }
+      }
+    }
+    sortCast(results);
+    for(int j = 1; j<results.size(); j++){
+      System.out.println(j + ". " + results.get(j));
+    }
+    System.out.print("Who do you want to know more about? (Insert their number): ");
+    int num = scanner.nextInt();
+    num --;
+    String person = results.get(num);
 
+
+  }
+
+  private void sortCast(ArrayList<String> listToSort){
+    for (int j = 1; j < listToSort.size(); j++) {
+      String temp = listToSort.get(j);
+      String tempTitle = temp;
+
+      int possibleIndex = j;
+      while (possibleIndex > 0 && tempTitle.compareTo(listToSort.get(possibleIndex - 1)) < 0) {
+        listToSort.set(possibleIndex, listToSort.get(possibleIndex - 1));
+        possibleIndex--;
+      }
+      listToSort.set(possibleIndex, temp);
+    }
   }
   
   private void listGenres() {
